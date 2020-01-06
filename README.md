@@ -7,23 +7,23 @@ The Proxy accepts two integers and calls the Processor (via gRPC) which retruns 
 
 ### Clone the repository
 ```
-$ git clone https://github.com/santiago-tolley/go-service-example.git
+git clone https://github.com/santiago-tolley/go-service-example.git
 ```
 ### Compile Protobuf
 ```
-$ protoc pb/processor.proto --go_out=plugins=grpc:.
+protoc pb/processor.proto --go_out=plugins=grpc:.
 ```
 Note: install protoc-gen-go with `go get -u github.com/golang/protobuf/protoc-gen-go`
 
 ### Create Go module
 ```
-$ go mod init go-service-example
+go mod init go-service-example
 ```
 
 ### Build
 ```
-$ go build cmd/processor/main.go
-$ go build cmd/proxy/main.go
+go build cmd/processor/main.go
+go build cmd/proxy/main.go
 ```
 
 ## Running the Services
