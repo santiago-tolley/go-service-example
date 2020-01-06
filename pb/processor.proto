@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+package pb;
+
+service Processor {
+    rpc Calculate (ProcessRequest) returns (ProcessResponse) {}
+}
+
+message ProcessRequest {
+    int64 value = 1;
+    int64 multiplier = 2;
+}
+
+message ProcessResponse {
+    int64 result = 1;
+    string err = 2; 
+}
