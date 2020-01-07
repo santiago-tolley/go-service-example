@@ -14,6 +14,6 @@ func NewProcessorServer() ProcessorService {
 
 type processorService struct{}
 
-func (p processorService) Calculate(_ context.Context, value int, multiplier int) (int, error) {
+func (p processorService) Calculate(_ context.Context, value, multiplier int) (int, error) {
 	return value * multiplier, nil
 }

@@ -6,7 +6,6 @@ import (
 	"net/http"
 
 	"github.com/go-kit/kit/endpoint"
-	// "github.com/go-kit/kit/examples/addsvc/pkg/addservice"
 	httptransport "github.com/go-kit/kit/transport/http"
 	"github.com/gorilla/mux"
 )

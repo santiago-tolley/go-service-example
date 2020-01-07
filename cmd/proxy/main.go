@@ -11,7 +11,6 @@ import (
 
 	"go-service-example/pkg/proxy"
 
-	// "github.com/go-kit/kit/transport/http"
 	"go-service-example/pkg/processor"
 
 	"github.com/oklog/oklog/pkg/group"

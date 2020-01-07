@@ -17,7 +17,7 @@ type proxyService struct {
 	client processor.ProcessorService
 }
 
-func (p proxyService) Multiply(ctx context.Context, value int, multiplier int) (int, error) {
+func (p proxyService) Multiply(ctx context.Context, value, multiplier int) (int, error) {
 	result, err := p.client.Calculate(ctx, value, multiplier)
 	return result, err
 }

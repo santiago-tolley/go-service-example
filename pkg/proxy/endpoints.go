@@ -4,14 +4,13 @@ import (
 	"context"
 
 	"github.com/go-kit/kit/endpoint"
-	//"github.com/go-kit/kit/log"
 )
 
 type Endpoints struct {
 	MultiplyEndpoint endpoint.Endpoint
 }
 
-func (e Endpoints) Multiply(ctx context.Context, value int, multiplier int) (int, error) {
+func (e Endpoints) Multiply(ctx context.Context, value, multiplier int) (int, error) {
 	resp, err := e.MultiplyEndpoint(ctx, MultiplyRequest{Value: value, Multiplier: multiplier})
 	if err != nil {
 		return 0, err

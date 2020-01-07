@@ -1,6 +1,5 @@
 package main
 
-// move this functionality to cmd or a makefile
 import (
 	"fmt"
 	"log"
