@@ -3,6 +3,7 @@ package main
 // move this functionality to cmd or a makefile
 import (
 	"fmt"
+	"log"
 	"net"
 	"os"
 	"os/signal"
@@ -29,7 +30,7 @@ func main() {
 
 	grpcListener, err := net.Listen("tcp", grpcAddr)
 	if err != nil {
-		os.Exit(1)
+		log.Fatal("could not set up gRPC listner: ", err)
 	}
 
 	g.Add(func() error {

@@ -1,6 +1,5 @@
 package main
 
-// move this functionality to a makefile?
 import (
 	"fmt"
 	"log"
@@ -26,7 +25,7 @@ func main() {
 
 	gRPCconn, err := grpc.Dial(grpcAddr, grpc.WithInsecure())
 	if err != nil {
-		log.Fatal("could not connect to processor: %v", err)
+		log.Fatal("could not connect to processor: ", err)
 	}
 	client := processor.NewGRPCClient(gRPCconn)
 
@@ -39,7 +38,7 @@ func main() {
 	var g group.Group
 	httpListener, err := net.Listen("tcp", httpAddr)
 	if err != nil {
-		os.Exit(1)
+		log.Fatal("could not set up HTTP listner: ", err)
 	}
 	g.Add(func() error {
 		return http.Serve(httpListener, httpHandler)
