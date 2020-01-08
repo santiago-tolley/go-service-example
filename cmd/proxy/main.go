@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"log"
 	"net"
 	"net/http"
 	"os"
@@ -13,6 +12,7 @@ import (
 
 	"go-service-example/pkg/processor"
 
+	kitlog "github.com/go-kit/kit/log"
 	"github.com/oklog/oklog/pkg/group"
 	"google.golang.org/grpc"
 )
@@ -21,10 +21,12 @@ func main() {
 
 	httpAddr := ":8080"
 	grpcAddr := ":8081"
+	logger := kitlog.NewLogfmtLogger(kitlog.NewSyncWriter(os.Stdout))
+	errLogger := kitlog.NewLogfmtLogger(kitlog.NewSyncWriter(os.Stderr))
 
 	gRPCconn, err := grpc.Dial(grpcAddr, grpc.WithInsecure())
 	if err != nil {
-		log.Fatal("could not connect to processor: ", err)
+		errLogger.Log("message", "could not set up gRPC connection to processor", "addr", grpcAddr, "error", err)
 	}
 	client := processor.NewGRPCClient(gRPCconn)
 
@@ -37,7 +39,7 @@ func main() {
 	var g group.Group
 	httpListener, err := net.Listen("tcp", httpAddr)
 	if err != nil {
-		log.Fatal("could not set up HTTP listner: ", err)
+		errLogger.Log("message", "could not set up HTTP listner", "error", err)
 	}
 	g.Add(func() error {
 		return http.Serve(httpListener, httpHandler)
@@ -59,6 +61,6 @@ func main() {
 		close(cancelInterrupt)
 	})
 
-	fmt.Println("HTTP: listening on port ", httpAddr)
+	logger.Log("HTTP", "listening", "addr", httpAddr)
 	g.Run()
 }

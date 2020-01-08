@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"log"
 	"net"
 	"os"
 	"os/signal"
@@ -11,6 +10,7 @@ import (
 	"go-service-example/pb"
 	"go-service-example/pkg/processor"
 
+	kitlog "github.com/go-kit/kit/log"
 	kitgrpc "github.com/go-kit/kit/transport/grpc"
 	"github.com/oklog/oklog/pkg/group"
 	"google.golang.org/grpc"
@@ -18,6 +18,8 @@ import (
 
 func main() {
 	grpcAddr := ":8081"
+	logger := kitlog.NewLogfmtLogger(kitlog.NewSyncWriter(os.Stdout))
+	errLogger := kitlog.NewLogfmtLogger(kitlog.NewSyncWriter(os.Stderr))
 
 	var (
 		service    = processor.NewProcessorServer()
@@ -29,7 +31,7 @@ func main() {
 
 	grpcListener, err := net.Listen("tcp", grpcAddr)
 	if err != nil {
-		log.Fatal("could not set up gRPC listner: ", err)
+		errLogger.Log("message", "could not set up gRPC listner", "error", err)
 	}
 
 	g.Add(func() error {
@@ -54,6 +56,6 @@ func main() {
 		close(cancelInterrupt)
 	})
 
-	fmt.Println("gRPC: listening on port ", grpcAddr)
+	logger.Log("gRPC", "listening", "addr", grpcAddr)
 	g.Run()
 }

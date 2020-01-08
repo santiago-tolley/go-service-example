@@ -38,10 +38,7 @@ func MakeMultiplyEndpoint(p ProxyService) endpoint.Endpoint {
 		}
 
 		v, err := p.Multiply(ctx, req.Value, req.Multiplier)
-		if err != nil {
-			return MultiplyResponse{0, err}, nil
-		}
-		return MultiplyResponse{v, nil}, nil
+		return MultiplyResponse{v, err}, nil
 	}
 }
 
