@@ -45,7 +45,7 @@ curl --location --request POST 'localhost:8080/multiply/' \
 --header 'Content-Type: application/json' \
 --data-raw '{ 
 	"value": 6, 
-	"multiplier": 5 
+	"multiplier": 7 
 }'
 ```
 This command targets the "/multiply/" endpoint. 
