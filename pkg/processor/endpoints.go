@@ -2,6 +2,7 @@ package processor
 
 import (
 	"context"
+	"errors"
 
 	"github.com/go-kit/kit/endpoint"
 )
@@ -15,7 +16,10 @@ func (e Endpoints) Calculate(ctx context.Context, value, multiplier int) (int, e
 	if err != nil {
 		return 0, err
 	}
-	response := resp.(CalculateResponse)
+	response, ok := resp.(CalculateResponse)
+	if !ok {
+		return 0, errors.New("Invalid response structure")
+	}
 
 	return response.Result, response.Err
 }
@@ -28,12 +32,13 @@ func MakeEndpoints(p ProcessorService) Endpoints {
 
 func MakeCalculateEndpoint(p ProcessorService) endpoint.Endpoint {
 	return func(ctx context.Context, request interface{}) (interface{}, error) {
-		req := request.(CalculateRequest)
-		v, err := p.Calculate(ctx, req.Value, req.Multiplier)
-		if err != nil {
-			return CalculateResponse{0, err}, nil
+		req, ok := request.(CalculateRequest)
+		if !ok {
+			return nil, errors.New("Invalid request structure")
 		}
-		return CalculateResponse{v, nil}, nil
+
+		v, err := p.Calculate(ctx, req.Value, req.Multiplier)
+		return CalculateResponse{v, err}, nil
 	}
 }
 

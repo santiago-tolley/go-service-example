@@ -26,7 +26,11 @@ func NewGRPCClient(conn *grpc.ClientConn) ProcessorService {
 }
 
 func encodeGRPCProcessRequest(_ context.Context, request interface{}) (interface{}, error) {
-	req := request.(CalculateRequest)
+	req, ok := request.(CalculateRequest)
+	if !ok {
+		return nil, errors.New("Invalid request structure")
+	}
+
 	return &pb.ProcessRequest{
 		Value:      int64(req.Value),
 		Multiplier: int64(req.Multiplier),
@@ -34,7 +38,11 @@ func encodeGRPCProcessRequest(_ context.Context, request interface{}) (interface
 }
 
 func decodeGRPCProcessResponse(_ context.Context, grpcReply interface{}) (interface{}, error) {
-	reply := grpcReply.(*pb.ProcessResponse)
+	reply, ok := grpcReply.(*pb.ProcessResponse)
+	if !ok {
+		return nil, errors.New("Invalid response structure")
+	}
+
 	return CalculateResponse{
 		Result: int(reply.Result),
 		Err:    str2err(reply.Err),

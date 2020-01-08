@@ -2,6 +2,7 @@ package proxy
 
 import (
 	"context"
+	"errors"
 
 	"github.com/go-kit/kit/endpoint"
 )
@@ -15,7 +16,10 @@ func (e Endpoints) Multiply(ctx context.Context, value, multiplier int) (int, er
 	if err != nil {
 		return 0, err
 	}
-	response := resp.(MultiplyResponse)
+	response, ok := resp.(MultiplyResponse)
+	if !ok {
+		return 0, errors.New("Invalid response structure")
+	}
 
 	return response.Result, response.Err
 }
@@ -28,7 +32,11 @@ func MakeEndpoints(p ProxyService) Endpoints {
 
 func MakeMultiplyEndpoint(p ProxyService) endpoint.Endpoint {
 	return func(ctx context.Context, request interface{}) (interface{}, error) {
-		req := request.(MultiplyRequest)
+		req, ok := request.(MultiplyRequest)
+		if !ok {
+			return nil, errors.New("Invalid request structure")
+		}
+
 		v, err := p.Multiply(ctx, req.Value, req.Multiplier)
 		if err != nil {
 			return MultiplyResponse{0, err}, nil

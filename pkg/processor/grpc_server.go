@@ -2,6 +2,7 @@ package processor
 
 import (
 	"context"
+	"errors"
 	"go-service-example/pb"
 
 	grpctransport "github.com/go-kit/kit/transport/grpc"
@@ -22,15 +23,24 @@ func NewGRPCServer(endpoints Endpoints) pb.ProcessorServer {
 }
 
 func (s *grpcServer) Calculate(ctx context.Context, req *pb.ProcessRequest) (*pb.ProcessResponse, error) {
-	_, resp, err := s.calculate.ServeGRPC(ctx, req)
+	_, r, err := s.calculate.ServeGRPC(ctx, req)
 	if err != nil {
 		return nil, err
 	}
-	return resp.(*pb.ProcessResponse), nil
+	resp, ok := r.(*pb.ProcessResponse)
+	if !ok {
+		return nil, errors.New("Invalid response structure")
+	}
+
+	return resp, nil
 }
 
 func decodeGRPCCalculateRequest(ctx context.Context, grpcReq interface{}) (interface{}, error) {
-	req := grpcReq.(*pb.ProcessRequest)
+	req, ok := grpcReq.(*pb.ProcessRequest)
+	if !ok {
+		return nil, errors.New("Invalid request structure")
+	}
+
 	return CalculateRequest{
 		Value:      int(req.Value),
 		Multiplier: int(req.Multiplier),
@@ -38,7 +48,11 @@ func decodeGRPCCalculateRequest(ctx context.Context, grpcReq interface{}) (inter
 }
 
 func encodeGRPCCalculateResponse(_ context.Context, response interface{}) (interface{}, error) {
-	resp := response.(CalculateResponse)
+	resp, ok := response.(CalculateResponse)
+	if !ok {
+		return nil, errors.New("Invalid response structure")
+	}
+
 	return &pb.ProcessResponse{
 		Result: int64(resp.Result),
 		Err:    err2str(resp.Err),
